@@ -1,8 +1,24 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image: url("https://img0.etsystatic.com/000/0/5278162/il_fullxfull.58694896.jpg");
+
+
+
 }
+
 
 a {
   color: #00B7FF;
+}
+input, thead > tr, tbody > tr:nth-child(n + 1){
+  background-color: #777777;
+  border:2px solid black;
+}
+tbody > tr:nth-child(2n + 1){
+  background-color: #999966;
+  border:2px solid black;
+}
+input {
+  padding: 8px;
 }
