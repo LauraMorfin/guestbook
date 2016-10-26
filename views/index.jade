@@ -20,8 +20,8 @@ block content
       each user, i in userlist
        tr
         td
-         a(href="#{user._id}/usermessage")= user.username
+         a(href="/#{user._id}/usermessage")= user.username
         td #{user.email}
         td #{user.comment}
         td
-         a.btn.btn-info(href="#{user._id}") Delete
+         a.btn.btn-info(href="/#{user._id}") Delete
