@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1.
+     Message
+
+    table.table.table-striped
+     thead
+      tr
+       td Name
+       td Email
+       td Comments
+       td
+     tbody
+      each key, i in usermessage
+       tr
+        td #{key.username}
+        td #{key.email}
+        td #{key.comment}
+        td
+         a.btn.btn-danger(href="#{key._id}") Delete

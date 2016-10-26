@@ -1,9 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  form#formAddUser(name="adduser", method = "post", action="/adduser")
+    h1.
+        Guestbook
+    form#formAddUser(name="adduser", method = "post", action="/adduser")
       input#inputUserName(type="test", placeholder="username", name="username")
       input#inputUserEmail(type="test", placeholder="useremail", name="useremail")
       input#inputUserComment(type="test", placeholder="usercomment", name="usercomment")
       button#btnSubmmit(type="submit") submit
+
+    button Add Guest
+
+        each user, i in userlist
+            li
+                p #{user.email}
+                a(href="mailto:#{user.email}")= user.username
+                p #{user.comment}

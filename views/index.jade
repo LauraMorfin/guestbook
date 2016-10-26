@@ -1,5 +1,27 @@
 extends layout
 
 block content
-  h1= title
-  p  Welcome to #{title}
+    h1.
+     Guestbook 1
+    form#formAddUser(name="adduser", method = "post", action="/adduser")
+      input.form-group#inputUserName(type="test", placeholder="username", name="username")
+      input.form-group#inputUserEmail(type="test", placeholder="useremail", name="useremail")
+      input.form-group#inputUserComment(type="test", placeholder="usercomment", name="usercomment")
+      button.btn.btn-default#btnSubmmit(type="submit")  submit
+
+    table.table.table-striped
+     thead
+      tr
+       td Name
+       td Email
+       td Comments
+       td
+     tbody
+      each user, i in userlist
+       tr
+        td
+         a(href="#{user._id}/usermessage")= user.username
+        td #{user.email}
+        td #{user.comment}
+        td
+         a.btn.btn-danger(href="#{user._id}") Delete
