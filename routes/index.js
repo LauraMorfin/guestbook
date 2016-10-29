@@ -1,7 +1,7 @@
 var express = require('express');
 var ObjectID = require('mongodb').ObjectID;
 var router = express.Router();
-
+var passport = require('passport');
 
 /* GET Userlist page. */
 router.get('/', function(req, res) {
@@ -18,6 +18,8 @@ router.get('/', function(req, res) {
 router.get('/newuser',function(req,res){
 	res.render('newuser',{ title:'Add New User'});
 })
+
+
 
 /* POST to Add User Service */
 router.post('/adduser', function(req,res){
@@ -84,6 +86,25 @@ router.get('/:id/usermessage', function(req,res){
 		}
 	});
 });
+//auth0
+// Render the login template
+router.get('/login',
+  function(req, res, next){
+    res.render('login', { env: env });
+  });
 
+// Perform session logout and redirect to homepage
+router.get('/logout', function(req, res, next){
+  req.logout();
+  res.redirect('/');
+});
+
+// Perform the final stage of authentication and redirect to '/user'
+router.get('/callback',
+  passport.authenticate('auth0', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect(req.session.returnTo || '/user');
+  });
+  //auth0
 
 module.exports = router;

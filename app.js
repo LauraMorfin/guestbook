@@ -1,3 +1,8 @@
+//Auth0
+require('dotenv').config();
+var passport = require('passport');
+var Auth0Strategy = require('passport-auth0');
+//Auth0
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -13,6 +18,31 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+// Configure Passport to use Auth0
+var strategy = new Auth0Strategy({
+    domain:       process.env.AUTH0_DOMAIN,
+    clientID:     process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    callbackURL:  process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback'
+  }, function(accessToken, refreshToken, extraParams, profile, done) {
+    // accessToken is the token to call Auth0 API (not needed in the most cases)
+    // extraParams.id_token has the JSON Web Token
+    // profile has all the information from the user
+    return done(null, profile);
+  });
+
+passport.use(strategy);
+
+// This can be used to keep a smaller payload
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+//Auth0
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +54,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+//auth0 middlewares
+app.use(passport.initialize());
+app.use(passport.session());
+//auth0
+
 app.use(express.static(path.join(__dirname, 'public')));
  //Make our db accessible to our routers
  app.use(function(req, res, next){
@@ -64,6 +99,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
