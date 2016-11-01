@@ -15,9 +15,10 @@ var monk = require('monk');
 var db = monk('localhost:27017/nodetest1');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var user = require('./routes/user');
 
 var app = express();
+
 // Configure Passport to use Auth0
 var strategy = new Auth0Strategy({
     domain:       process.env.AUTH0_DOMAIN,
@@ -28,8 +29,12 @@ var strategy = new Auth0Strategy({
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
-    return done(null, profile);
+// Store the profile and tokens in the user object.
+    return done(null, {
+      profile: profile,
+      extraParams: extraParams,
   });
+});
 
 passport.use(strategy);
 
@@ -61,12 +66,12 @@ app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
  //Make our db accessible to our routers
- app.use(function(req, res, next){
-req.db = db;
-next();
+app.use(function(req, res, next){
+  req.db = db;
+  next();
 });
 app.use('/', routes);
-app.use('/users', users);
+app.use('/user', user);
 
 
 // catch 404 and forward to error handler

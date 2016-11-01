@@ -2,9 +2,27 @@ var express = require('express');
 var ObjectID = require('mongodb').ObjectID;
 var router = express.Router();
 var passport = require('passport');
+//Auth0
+// var requireRole = require('../requireRole');
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+
+// Get the user profile
+router.get('/', ensureLoggedIn, function(req, res, next) {
+  res.render('user', { user: req.user });
+});
+
+
+
+//Auth0
+
+var env = {
+ AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
+ AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
+ AUTH0_CALLBACK_URL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback'
+};
 
 /* GET Userlist page. */
-router.get('/', function(req, res) {
+router.get('/', ensureLoggedIn, function(req, res) {
     var db = req.db;
     var collection = db.get('usercollection');
     collection.find({},{},function(e,docs){
@@ -18,7 +36,6 @@ router.get('/', function(req, res) {
 router.get('/newuser',function(req,res){
 	res.render('newuser',{ title:'Add New User'});
 })
-
 
 
 /* POST to Add User Service */
@@ -53,7 +70,7 @@ router.post('/adduser', function(req,res){
 });
 
 //delete guest book entry
-router.get('/:id', function(req,res){
+router.get('/delete/:id', function(req,res){
 	var id = req.params.id;
 	var objectId = new ObjectID(id);
 
@@ -90,6 +107,7 @@ router.get('/:id/usermessage', function(req,res){
 // Render the login template
 router.get('/login',
   function(req, res, next){
+
     res.render('login', { env: env });
   });
 
@@ -101,10 +119,32 @@ router.get('/logout', function(req, res, next){
 
 // Perform the final stage of authentication and redirect to '/user'
 router.get('/callback',
-  passport.authenticate('auth0', { failureRedirect: '/login' }),
+  passport.authenticate('auth0', {
+     failureRedirect: '/login' ,
+   }),
   function(req, res) {
-    res.redirect(req.session.returnTo || '/user');
-  });
+    res.render('callback', {
+      env:env,
+      user: req.user,
+    });
+});
+// router.get('/link',
+// unsureLoggedIn,
+// function(req, res) {
+//   res.render('link', {env: env});
+// });
+
+// router.get('/admin',
+//   requireRole('admin'),
+//   function(req,res) {
+//     res.render('admin');
+// });
+
+router.get('/unauthorized', function(req, res){
+  res.render('unauthorized', {env:env});
+});
+
+
   //auth0
 
 module.exports = router;
