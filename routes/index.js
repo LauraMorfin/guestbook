@@ -2,15 +2,6 @@ var express = require('express');
 var ObjectID = require('mongodb').ObjectID;
 var router = express.Router();
 var passport = require('passport');
-//Auth0
-// var requireRole = require('../requireRole');
-var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
-
-// Get the user profile
-router.get('/', ensureLoggedIn, function(req, res, next) {
-  res.render('user', { user: req.user });
-});
-
 
 
 //Auth0
@@ -20,6 +11,30 @@ var env = {
  AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
  AUTH0_CALLBACK_URL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback'
 };
+//Auth0
+// var requireRole = require('../requireRole');
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+
+// Get the user profile
+// router.get('/', ensureLoggedIn, function(req, res, next) {
+//   res.render('user', { user: req.user , env:env});
+// });
+
+
+
+//Guestbook
+router.route('/guestbook')
+ .get((req, res) => {
+   var db = req.db;
+   var collection = db.get('guestbook');
+   collection.find({}, {}, function (e, docs) {
+     res.render('guestbook', {
+       userlist: docs,
+       "title": "My guestbook",
+       env: env
+     });
+   });
+ })
 
 /* GET Userlist page. */
 router.get('/', ensureLoggedIn, function(req, res) {
@@ -123,10 +138,11 @@ router.get('/callback',
      failureRedirect: '/login' ,
    }),
   function(req, res) {
-    res.render('callback', {
-      env:env,
-      user: req.user,
-    });
+  //  res.render('callback', {
+      //env:env,
+      //user: req.user,
+      res.redirect(req.session.returnTo || "/guestbook");
+    //});
 });
 // router.get('/link',
 // unsureLoggedIn,

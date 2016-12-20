@@ -8,7 +8,7 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 // Get the user profile auth0
 router.get('/', ensureLoggedIn, function(req, res, next) {
-  res.render('user', {
+res.render('user', {
     user: req.user ,
     userProfile: JSON.stringify(req.user, null, '  ')
   });
