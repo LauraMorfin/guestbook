@@ -23,18 +23,17 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 
 //Guestbook
-router.route('/guestbook')
- .get((req, res) => {
-   var db = req.db;
-   var collection = db.get('guestbook');
-   collection.find({}, {}, function (e, docs) {
-     res.render('guestbook', {
-       userlist: docs,
-       "title": "My guestbook",
-       env: env
-     });
-   });
- })
+// router.get('/guestbook', ensureLoggedIn, (req, res) => {
+//    var db = req.db;
+//    var collection = db.get('guestbook');
+//    collection.find({}, {}, function (e, docs) {
+//      res.render('guestbook', {
+//        userlist: docs,
+//        "title": "My guestbook",
+//        env: env
+//     });
+//    });
+//  })
 
 /* GET Userlist page. */
 router.get('/', ensureLoggedIn, function(req, res) {
