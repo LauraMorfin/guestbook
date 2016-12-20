@@ -117,6 +117,59 @@ router.get('/:id/usermessage', function(req,res){
 		}
 	});
 });
+//edit message
+router.get('/edit/:id', function(req,res){
+	var id = req.params.id;
+	var objectId = new ObjectID(id);
+  console.log('the id is ' + id);
+	var db = req.db;
+	var collection = db.get('usercollection');
+	// console.log(collection);
+  collection.findOne({_id: objectId}, function(err, result){
+   if(err){
+     res.send("there was an error");
+   }
+   else{
+   console.log( 'This is what I found: \n' + result);
+   res.render('edit', {
+       "usermessage" : result
+
+     });
+   }
+ });
+
+});
+//posting edit
+router.post('/edit', function(req,res){
+	//set our internal db variable
+	var db = req.db;
+  console.log(req.body);
+	//get our form values, these rely on the "name attributes"
+	var userName = req.body.username;
+	var userEmail = req.body.useremail;
+	var userComment = req.body.usercomment;
+  var _id= new ObjectID(req.body._id);
+	//set our collection
+	var collection = db.get('usercollection');
+
+	//submit to the db
+	collection.update({_id:_id},{
+		"username" :userName,
+		"email": userEmail,
+		"comment": userComment
+
+	}, function(err,doc){
+		if(err){
+			//if it failed, return error
+			res.send("There was a problem editing the information to the database");
+		}
+		else{
+			//ad forward to sucess page
+			res.redirect("/");
+		}
+	});
+});
+
 //auth0
 // Render the login template
 router.get('/login',

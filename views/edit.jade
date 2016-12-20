@@ -1,0 +1,18 @@
+extends layout
+block content
+    h1.
+        Edit
+    form#forEditUser(name="edit", method = "post", action="/edit")
+      input#inputId(type="hidden", value="#{usermessage._id}", name="_id")
+      input#inputUserName(type="test", value="#{usermessage.username}", name="username")
+      input#inputUserEmail(type="test", value="#{usermessage.email}", name="useremail")
+      input#inputUserComment(type="test", value="#{usermessage.comment}", name="usercomment")
+      button.btn.btn-warning#btnSubmmit(type="submit")  submit
+
+  
+
+        //- each user, i in userlist
+        //-     li
+        //-         p #{user.email}
+        //-         a(href="mailto:#{user.email}")= user.username
+        //-         p #{user.comment}
